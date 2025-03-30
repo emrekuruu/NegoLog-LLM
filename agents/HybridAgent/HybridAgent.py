@@ -115,4 +115,6 @@ class HybridAgent(nenv.AbstractAgent):
 
         self.my_last_bids.append(bid)
 
+        bid.argument = "HybridAgent says hello"
+
         return Offer(bid)

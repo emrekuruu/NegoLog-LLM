@@ -118,7 +118,7 @@ class Bid:
 
             :return: Hash value of the bid
         """
-        return self.content.__str__().__hash__()
+        return self.content.__str__().__hash__() 
 
     def __str__(self):
         """
@@ -190,10 +190,9 @@ class Bid:
 
     def __copy__(self):
         """
-
             :return: Copy of the Bid object with utility value.
         """
-        return Bid(self.content.copy(), self.utility)
+        return Bid(self.content.copy(), self.utility, self.argument)
 
     def copy(self):
         """
@@ -204,7 +203,6 @@ class Bid:
 
     def copy_without_utility(self):
         """
-
             :return: Copy of the Bid object without utility value.
         """
         bid = self.__copy__()

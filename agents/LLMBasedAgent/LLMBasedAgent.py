@@ -41,6 +41,7 @@ class LLMBasedAgent(nenv.AbstractAgent):
             "time": t
         }
         self.offer_history.append(offer_info)
+        print("Recieved argument: ", bid.argument)
         
     def act(self, t: float) -> Action:
         """Determine action based on LLM reasoning"""
