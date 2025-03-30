@@ -30,16 +30,19 @@ class Bid:
     """
     content: Dict[Issue, str]  #: Corresponding offer content as dictionary.
     utility: float             #: Utility value of the bid. It may be unassigned (-1).
+    argument: str              #: Argument of the bid.
 
-    def __init__(self, content: dict, utility: float = -1):
+    def __init__(self, content: dict, utility: float = -1, argument: str = ""):
         """
             Constructor
 
             :param content: Offer content as a dictionary
             :param utility: Utility value of the bid. Default value = -1, means that the utility value was not assigned.
+            :param argument: Argument of the bid.
         """
         self.content = content
         self.utility = utility
+        self.argument = argument
 
     def __eq__(self, other: Union[int, float, Dict[Issue, str], object]):
         """
