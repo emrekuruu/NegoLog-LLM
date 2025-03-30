@@ -11,8 +11,6 @@ deadline_round: 10
 # You can either write the class name from 'agents' Python module or full path to the class.
 # Note that the class must be a subclass of 'AbstractAgent' class.
 agents: ['HybridAgent',
-         'BoulwareAgent',
-         'ConcederAgent',
          'LLMBasedAgent']
 
 ## Domain

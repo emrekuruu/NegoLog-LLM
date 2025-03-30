@@ -28,4 +28,6 @@ from agents.HardHeaded.KLH import HardHeaded
 from agents.IAMhaggler.IAMhaggler import IAMhaggler
 from agents.LinearAgent.LinearAgent import LinearAgent
 from agents.LuckyAgent2022.LuckyAgent2022 import LuckyAgent2022
-from agents.LLMBasedAgent.LLMBasedAgent import LLMBasedAgent
+from agents.LLMBasedAgent.emotionless import EmotionlessLLMBasedAgent
+from agents.LLMBasedAgent.emotional import EmotionalLLMBasedAgent
+
