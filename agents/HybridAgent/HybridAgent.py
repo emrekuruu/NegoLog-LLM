@@ -1,7 +1,59 @@
 from typing import List, Optional
 import nenv
 from nenv import Bid, Action, Offer
+import random
 
+def determine_argument(self, t: float) -> str:
+    if len(self.last_received_bids) < 2:
+        return argument_mapping["Neutral"][0]
+
+    current_utility = self.last_received_bids[-1].utility
+    previous_utility = self.last_received_bids[-2].utility
+    delta = current_utility - previous_utility
+
+    reservation = self.preference.reservation_value
+    
+    if delta > 0.25:
+        mood = "Pleased"
+    if 0 < delta <= 0.25:
+        mood = "Pleased"
+    if delta == 0:
+        mood = "Neutral"
+    if -0.25 < delta < 0:
+        mood = "Frustrated"
+    if delta <= -0.25 or (self.last_received_bids[-1].utility == self.last_received_bids[-2].utility):
+        mood = "Frustrated"
+    if (current_utility < reservation or
+        (t > 0.75 and current_utility <= 0.5) or
+        len(self.last_received_bids) >= 3 and
+        self.last_received_bids[-1].utility == self.last_received_bids[-2].utility == self.last_received_bids[-3].utility):
+        mood = "Frustrated"
+    if t > 0.8:
+        mood = "Worried"
+
+    return argument_mapping[mood][random.randint(0, len(argument_mapping[mood]) - 1)]
+
+argument_mapping = {
+    "Pleased": [
+        "Let me think about it. It is getting better, but not enough.",
+        "It is getting better but not enough.",
+    ],
+    "Frustrated": [
+        "Do you really think that is a fair offer? It is not acceptable at all.",
+        "Your offer is not acceptable. Please put yourself in my shoes.",
+        "No, It is not acceptable!",
+        "Thats so disappointing.",
+        "I don’t like your offer. You should revise it.",
+        "No, I can’t accept that, unfortunately.",
+        "That is not going to work for me!",
+        "Your offer is not fair enough."
+    ],
+    "Worried": [
+        "The deadline is approaching. Let’s find a deal soon.",
+        "Hurry up! We need to find a deal soon."
+    ],
+    "Neutral": ["No argument is given"]
+}
 
 class HybridAgent(nenv.AbstractAgent):
     """
@@ -115,6 +167,6 @@ class HybridAgent(nenv.AbstractAgent):
 
         self.my_last_bids.append(bid)
 
-        bid.argument = "HybridAgent says hello"
-
+        argument = determine_argument(self, t)
+        bid.argument = argument
         return Offer(bid)

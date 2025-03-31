@@ -5,8 +5,10 @@ from .Generation.generation import text_based
 import asyncio
 
 def calculate_target_utility(offer_history: List[float], t: float, model: str,  argument: str=None) -> float:
-    return asyncio.run(text_based(offer_history, 1-t, argument=argument, model_type=model))
-
+    try:
+        return asyncio.run(text_based(offer_history, 1-t, argument=argument, model_type=model))
+    except Exception as e:
+        pass
 class EmotionalLLMBasedAgent(nenv.AbstractAgent):
     """
     LLM-based negotiation agent that leverages language models for negotiation strategy.
@@ -30,7 +32,7 @@ class EmotionalLLMBasedAgent(nenv.AbstractAgent):
     def act(self, t: float) -> Action:
         """Determine action based on LLM reasoning"""
         
-        target_utility = calculate_target_utility(self.offer_history, t, argument=bid.argument, model=self.model)
+        target_utility = calculate_target_utility(self.offer_history[-5-1], t, argument=bid.argument, model=self.model)
 
         bid = self.preference.get_bid_at(target_utility)
 

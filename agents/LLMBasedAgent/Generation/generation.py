@@ -6,14 +6,14 @@ from .prompts import *
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def text_based(offer_history, time, argument, model_type):
+async def text_based(recieved_offer_history, sent_offer_history, time, argument, model_type):
     provider = model_type.split("-")[0]
     model = model_type[len(provider)+1:]
 
     if argument is not None:
-        prompt = text_based_emotion_prompt.format(offer_history=offer_history, time=time, argument=argument)
+        prompt = text_based_emotion_prompt.format(recieved_offer_history=recieved_offer_history, sent_offer_history=sent_offer_history, time=time, argument=argument)
     else:
-        prompt = text_based_emotionless_prompt.format(offer_history=offer_history, time=time)
+        prompt = text_based_emotionless_prompt.format(recieved_offer_history=recieved_offer_history, sent_offer_history=sent_offer_history, time=time)
 
     if provider == "openai":
         response = await Openai.text_based(model, prompt)
@@ -24,4 +24,4 @@ async def text_based(offer_history, time, argument, model_type):
     else:
         raise ValueError(f"Invalid model type: {model_type}")
 
-    return response.target_utility
+    return response.target_utility, response.reasoning

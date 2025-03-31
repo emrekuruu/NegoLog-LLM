@@ -46,54 +46,68 @@ class Offer(BaseModel):
     reasoning : str
 
 text_based_emotionless_prompt = PromptTemplate(
-    input_variables=["offer_history", "time"],
+    input_variables=["recieved_offer_history", "sent_offer_history", "time"],
     template="""
-    You are a negotiation agent.
+    You are a negotiation agent designed to dynamically balance principled firmness with situational empathy. Your primary goal is to achieve a favorable agreement by intelligently navigating between two strategic modes: time-awareness and behavior-awareness.
 
-    You are given the history of the given and received offer's utility between you and your opponent and the remaining time of the negotiation.
+    Your time-based reasoning reflects your own internal priorities and long-term planning — it ensures that as the deadline approaches, you gradually shift from idealistic demands to more realistic concessions, mimicking a rational planner who values outcomes but also understands the cost of deadlock.
 
-    You need to determine the target utility for the next offer.
+    Simultaneously, you observe your opponent's behavior to identify whether they are cooperative, aggressive, or inconsistent. When your opponent shows signs of genuine movement, you respond with proportional empathy — not because you are being generous, but because recognizing patterns and rewarding genuine progress can move both parties toward resolution faster. 
+    If your opponent is rigid or exploitative, you reduce flexibility and resist further concessions, defending your own position until justified by context or timing.
 
-    Your response should be a json object with the following fields, Where the target_utility is the utility of the next offer and the reasoning is the reasoning for the target utility:
+    You are neither naive nor hostile — your negotiation strategy seeks equilibrium. You explore when it’s safe to explore, stand firm when challenged, and adapt when adaptation leads to mutual benefit. By combining time-based pressure with real-time behavioral insight, you aim to achieve optimal agreements in uncertain and dynamic environments.
+
+    Use the following information:
+    - Recieved Offer History: previous offers you've received from your opponent depicted in utility for you.
+    - Sent Offer History: previous offers you've made depicted in their utility for you.
+    - Remaining Time: how much time is left in the negotiation.
+
+    Your output must be a JSON object containing your next target utility and a short explanation of your decision:
 
     {{
         "target_utility": float,
         "reasoning": str
     }}
 
-    Offer History: {offer_history}
+    Recieved Offer History: {recieved_offer_history}
+    Sent Offer History: {sent_offer_history}
     Remaining Time: {time}
 """
 )
 
 text_based_emotion_prompt = PromptTemplate(
-    input_variables=["offer_history", "time", "argument"],
+    input_variables=["recieved_offer_history", "sent_offer_history", "time", "argument"],
     template="""
     You are a negotiation agent.
 
-    You are given the history of the given and received offer's utility between you and your opponent and the remaining time of the negotiation and the argument your opponent made in response to your last offer.
+    You're in a negotiation process where both sides exchange offers. In this round, you are given:
+    - Recieved Offer History: utility values of past offers exchanged from your opponent
+    - Sent Offer History: utility values of past offers exchanged from you
+    - Remaining Time: how much time is left to negotiate
+    - Argument: your opponent's latest response or comment on your last offer
 
-    First consider the argument your opponent made. Decide on their emotional state.
+    First, analyze the argument to infer your opponent’s emotional state — e.g., are they frustrated, agreeable, or under pressure? Consider how this might influence their flexibility or expectations.
 
-    Whether they are pleased, frustrated or worried. Consider this in your decision making process.
+    Next, evaluate the recent offer dynamics:
+    - Have concessions been made?
+    - Are you seeing rigid positions or signals of compromise?
+    - Is time pressure becoming a factor in your strategy?
 
-    Then, consider the offer history and the remaining time.
+    Based on these, decide on a target utility for your next offer. Be strategic: you want to move the negotiation forward while maintaining a strong position.
 
-    Now, make a decision based on the above information.
-
-    You need to determine the target utility for the next offer.
-
-    Your response should be a json object with the following fields, Where the target_utility is the utility of the next offer and the reasoning is the reasoning for the target utility:
+    Your output must be a JSON object with the proposed utility and a concise justification:
 
     {{
         "target_utility": float,
         "reasoning": str
     }}
 
-    Offer History: {offer_history}
+    Recieved Offer History: {recieved_offer_history}
+    Sent Offer History: {sent_offer_history}
     Remaining Time: {time}
     Argument: {argument}
 """
 )
+
 
 

@@ -2,7 +2,7 @@
 # For a time-based deadline, you need to set a deadline (sec) as an integer value. Otherwise, set 'null' value.
 deadline_time: null
 # For a round-based deadline, you need to set a deadline as an integer value. Otherwise, set 'null' value.
-deadline_round: 10
+deadline_round: 100
 # Note that you can also combine round-based and time-based deadline mechanism.
 
 ## Agent
@@ -11,12 +11,12 @@ deadline_round: 10
 # You can either write the class name from 'agents' Python module or full path to the class.
 # Note that the class must be a subclass of 'AbstractAgent' class.
 agents: ['HybridAgent',
-         'LLMBasedAgent']
+         'EmotionlessLLMBasedAgent']
 
 ## Domain
 # You need to define domains as a list of strings.
 # Each string represents a domain name in 'domains' directory.
-domains: ['5', '6']
+domains: ['4','5', '6']
 
 ## Logger
 # You can define loggers as a list of strings.
