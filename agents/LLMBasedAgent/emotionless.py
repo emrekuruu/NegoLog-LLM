@@ -3,9 +3,11 @@ import nenv
 from nenv import Action, Bid, Offer
 from .Generation.generation import text_based
 import asyncio
+import logging
 
 def calculate_target_utility(recieved_offer_history: List[float], sent_offer_history: List[float], t: float, model: str,  argument: str=None) -> float:
-    return asyncio.run(text_based(recieved_offer_history, sent_offer_history, 1-t, argument=argument, model_type=model))
+    return text_based(recieved_offer_history, sent_offer_history, t, argument=argument, model_type=model)
+
 class EmotionlessLLMBasedAgent(nenv.AbstractAgent):
     """
     LLM-based negotiation agent that leverages language models for negotiation strategy.

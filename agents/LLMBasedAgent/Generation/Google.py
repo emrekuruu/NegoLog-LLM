@@ -5,7 +5,7 @@ from langchain_community.callbacks import get_openai_callback
 import os 
 
 @exponential_retry(max_retries=3, base_delay=1, jitter=0.1)
-async def text_based(model_type, prompt):
+def text_based(model_type, prompt):
     llm = ChatGoogleGenerativeAI(model=model_type, api_key=os.getenv("GOOGLE_API_KEY"))  
     llm = llm.with_structured_output(Offer)
 
@@ -14,7 +14,7 @@ async def text_based(model_type, prompt):
     ]
 
     message = HumanMessage(content=content)
-    response: Offer = await llm.ainvoke([message])
+    response: Offer = llm.invoke([message])
     return response
 
 # @exponential_retry(max_retries=3, base_delay=1, jitter=0.1)

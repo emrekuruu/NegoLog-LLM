@@ -3,7 +3,7 @@ from .prompts import Offer
 from langchain_anthropic import ChatAnthropic
 import os
 
-async def text_based(model_type, prompt):
+def text_based(model_type, prompt):
     llm = ChatAnthropic(api_key=os.getenv("CLAUDE_API_KEY"), model="claude-3-5-sonnet-20241022") 
     llm = llm.with_structured_output(Offer)
 
@@ -12,7 +12,7 @@ async def text_based(model_type, prompt):
     ]
 
     message = HumanMessage(content=content)
-    response: Offer = await llm.ainvoke([message])
+    response: Offer = llm.invoke([message])
     return response
 
 
