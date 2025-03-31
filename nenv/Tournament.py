@@ -13,16 +13,6 @@ from nenv.OpponentModel import OpponentModelClass
 from nenv.SessionManager import SessionManager
 from nenv.utils import ExcelLog, TournamentProcessMonitor, open_folder
 
-def reset_folder(path):
-    for filename in os.listdir(path):
-        file_path = os.path.join(path, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print(f"Failed to delete {file_path}. Reason: {e}")
 
 class Tournament:
     """
@@ -107,12 +97,12 @@ class Tournament:
             np.random.seed(self.seed)
             os.environ['PYTHONHASHSEED'] = str(self.seed)
 
-        # Create directory and reset it in a docker friendly way
+        # Create directory
         if os.path.exists(self.result_dir):
-            reset_folder(self.result_dir)
+            os.system(f"rm -rf {self.result_dir}")
 
-        os.makedirs(self.result_dir, exist_ok=True)
-        os.makedirs(os.path.join(os.path.join(self.result_dir, "sessions/")), exist_ok=True)
+        os.makedirs(self.result_dir)
+        os.makedirs(os.path.join(os.path.join(self.result_dir, "sessions/")))
 
         # Set killed flag
         self.killed = False

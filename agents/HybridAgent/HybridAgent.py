@@ -160,6 +160,7 @@ class HybridAgent(nenv.AbstractAgent):
 
         # AC_Next strategy to decide accepting or not
         if self.can_accept() and target_utility <= self.last_received_bids[-1].utility:
+            print("",flush=True)
             return self.accept_action
 
         # Find the closest bid to target utility
