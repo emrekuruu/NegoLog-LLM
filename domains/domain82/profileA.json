@@ -1,0 +1,39 @@
+{
+ "reservationValue": 0,
+ "issueWeights": {
+  "Apple": 0.4,
+  "Banana": 0.3,
+  "Lemon": 0.1,
+  "Orange": 0.2
+ },
+ "issues": {
+  "Apple": {
+   "Take0": 0.0,
+   "Take1": 0.25,
+   "Take2": 0.5,
+   "Take3": 0.75,
+   "Take4": 1.0
+  },
+  "Banana": {
+   "Take0": 0.0,
+   "Take1": 0.25,
+   "Take2": 0.5,
+   "Take3": 0.75,
+   "Take4": 1.0
+  },
+  "Lemon": {
+   "Take0": 0.0,
+   "Take1": 0.25,
+   "Take2": 0.5,
+   "Take3": 0.75,
+   "Take4": 1.0
+  },
+  "Orange": {
+   "Take0": 0.0,
+   "Take1": 0.25,
+   "Take2": 0.5,
+   "Take3": 0.75,
+   "Take4": 1.0
+  }
+ }
+}

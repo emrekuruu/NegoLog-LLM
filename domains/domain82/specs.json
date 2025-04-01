@@ -1,0 +1,26 @@
+{
+ "Name": "DomainResourceAllocation",
+ "NumberOfBids": 625,
+ "NumberOfIssues": 4,
+ "IssueValues": [
+  5,
+  5,
+  5,
+  5
+ ],
+ "Opposition": 0.5656854249492379,
+ "BalanceScore": -4.884981308350689e-19,
+ "NormalizedBalanceScore": -4.6259292692660026e-18,
+ "Product Score": 0.3600000000000001,
+ "Social Welfare": 1.2000000000000002,
+ "Nash_A": 0.6000000000000001,
+ "Nash_B": 0.6000000000000001,
+ "Kalai_A": 0.6000000000000001,
+ "Kalai_B": 0.6000000000000001,
+ "NashBid": "{'Apple': 'Take4', 'Banana': 'Take0', 'Lemon': 'Take0', 'Orange': 'Take4'}",
+ "KalaiBid": "{'Apple': 'Take4', 'Banana': 'Take0', 'Lemon': 'Take0', 'Orange': 'Take4'}",
+ "ReservationValueProfileA": 0,
+ "ReservationValueProfileB": 0,
+ "MinUtility": 0.0,
+ "MaxUtility": 1.0
+}

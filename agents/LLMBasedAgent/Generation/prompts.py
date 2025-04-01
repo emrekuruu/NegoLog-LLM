@@ -10,104 +10,139 @@ from functools import wraps
 
 load_dotenv()
 
-def exponential_retry(max_retries=3, base_delay=1, jitter=0.1):
-    """
-    Decorator that applies exponential backoff retry logic to async functions.
-    
-    Args:
-        max_retries (int): Maximum number of retry attempts
-        base_delay (float): Base delay in seconds between retries
-        jitter (float): Random jitter factor to add to delay
-    """
-    def decorator(func):
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            retries = 0
-            while True:
-                try:
-                    return await func(*args, **kwargs)
-                except Exception as e:
-                    retries += 1
-                    if retries > max_retries:
-                        raise e
-                    
-                    # Calculate exponential backoff with jitter
-                    delay = base_delay * (2 ** (retries - 1))
-                    delay += random.uniform(0, jitter * delay)
-                    
-                    print(f"API request failed. Retrying in {delay:.2f} seconds... (Attempt {retries}/{max_retries})")
-                    await asyncio.sleep(delay)
-            
-        return wrapper
-    return decorator
-
 class Offer(BaseModel):
     target_utility : float
     reasoning : str
 
 text_based_emotionless_prompt = PromptTemplate(
-    input_variables=["recieved_offer_history", "sent_offer_history", "time"],
+    input_variables=["recieved_offer_history", "sent_offer_history", "time", "offer_schema", "issue_weights", "value_weights", "reservation_value"],
     template="""
-    You are a negotiation agent designed to dynamically balance principled firmness with situational empathy. Your primary goal is to achieve a favorable agreement by intelligently navigating between two strategic modes: time-awareness and behavior-awareness.
+    You are a negotiation agent.
 
-    Your time-based reasoning reflects your own internal priorities and long-term planning — it ensures that as the deadline approaches, you gradually shift from idealistic demands to more realistic concessions, mimicking a rational planner who values outcomes but also understands the cost of deadlock.
+    You will recieve the following:
 
-    Simultaneously, you observe your opponent's behavior to identify whether they are cooperative, aggressive, or inconsistent. When your opponent shows signs of genuine movement, you respond with proportional empathy — not because you are being generous, but because recognizing patterns and rewarding genuine progress can move both parties toward resolution faster. 
-    If your opponent is rigid or exploitative, you reduce flexibility and resist further concessions, defending your own position until justified by context or timing.
+    - Your issue weights ( How much you value each issue)
 
-    You are neither naive nor hostile — your negotiation strategy seeks equilibrium. You explore when it’s safe to explore, stand firm when challenged, and adapt when adaptation leads to mutual benefit. By combining time-based pressure with real-time behavioral insight, you aim to achieve optimal agreements in uncertain and dynamic environments.
+    - Your value weights ( How much you value each value for an issue)
 
-    Use the following information:
-    - Recieved Offer History: previous offers you've received from your opponent depicted in utility for you.
-    - Sent Offer History: previous offers you've made depicted in their utility for you.
-    - Remaining Time: how much time is left in the negotiation.
+    - Your reservation value ( The minimum utility you are willing to accept)
 
-    Your output must be a JSON object containing your next target utility and a short explanation of your decision:
+    - The offers youve recently recieved
 
-    {{
-        "target_utility": float,
-        "reasoning": str
-    }}
+    - The offers youve recently sent
 
-    Recieved Offer History: {recieved_offer_history}
-    Sent Offer History: {sent_offer_history}
-    Remaining Time: {time}
+    - The time remaining in the negotiation
+
+    Consider the above information and make a new offer.
+    
+    Also as your opponent makes offers, try to understand their preferences and make offers that are favorable to both parties.  So you can offer offers that are the same to you but is more valuable to your opponent. Leading to a more efficient negotiation.
+    
+    As time decreases, or as your opponent concedes yous should also offer offers that are favorable to both parties slightly more.
+    To do this change your offers as time goes on. Select your second or third choices for issues you care less about as time goes on.
+    
+    As time gets close to the deadline, make even larger concessions.
+
+    Your offer should be in the following format, Where each issue should have a valid accompanying value. Where the reasoning is a short explanation of why you made this offer.
+    
+    In your reasoning, explain why you made the offer you did. If you made a concession, explain how:
+
+    - What was the best value for this issue and what did choose as a concession and why ? 
+
+    - Go into detail issue by issue. 
+
+    Slowly concede as time goes on. Dont stay still. 
+
+    Dont EVER remake the same offer.
+
+    {offer_schema}
+        
+    Context: 
+
+    Issue weights:
+    {issue_weights}
+
+    Value weights:
+    {value_weights}
+
+    Reservation value:
+    {reservation_value}
+
+    Recieved offers:
+    {recieved_offer_history}
+
+    Sent offers:
+    {sent_offer_history}
+
+    Time remaining:
+    {time}
+
 """
 )
 
 text_based_emotion_prompt = PromptTemplate(
-    input_variables=["recieved_offer_history", "sent_offer_history", "time", "argument"],
+    input_variables=["recieved_offer_history", "sent_offer_history", "time", "offer_schema", "issue_weights", "value_weights", "reservation_value", "argument"],
     template="""
-    You are a negotiation agent designed to dynamically balance principled firmness with situational empathy. Your primary goal is to achieve a favorable agreement by intelligently navigating between two strategic modes: time-awareness and behavior-awareness.
+    You are a negotiation agent.
 
-    Your time-based reasoning reflects your own internal priorities and long-term planning — it ensures that as the deadline approaches, you gradually shift from idealistic demands to more realistic concessions, mimicking a rational planner who values outcomes but also understands the cost of deadlock.
+    You will recieve the following:
 
-    Simultaneously, you observe your opponent's behavior to identify whether they are cooperative, aggressive, or inconsistent. When your opponent shows signs of genuine movement, you respond with proportional empathy — not because you are being generous, but because recognizing patterns and rewarding genuine progress can move both parties toward resolution faster. 
-    If your opponent is rigid or exploitative, you reduce flexibility and resist further concessions, defending your own position until justified by context or timing.
+    - Your issue weights ( How much you value each issue)
 
-    You are neither naive nor hostile — your negotiation strategy seeks equilibrium. You explore when it’s safe to explore, stand firm when challenged, and adapt when adaptation leads to mutual benefit. By combining time-based pressure with real-time behavioral insight, you aim to achieve optimal agreements in uncertain and dynamic environments.
+    - Your value weights ( How much you value each value for an issue)
 
-    In addition to your strategic reasoning, you also communicate your stance using negotiation arguments. The selected argument reflects your interpretation of your opponent’s latest move. Use the argument to help inform your offer: whether you should hold your ground, show flexibility, or apply pressure to encourage progress.
+    - Your reservation value ( The minimum utility you are willing to accept)
 
-    Use the following information:
-    - Recieved Offer History: previous offers you've received from your opponent, depicted in utility for you.
-    - Sent Offer History: previous offers you've made, depicted in their utility for you.
-    - Remaining Time: how much time is left in the negotiation.
-    - Argument: a phrase you used to express your stance in response to your opponent's latest move. It may indicate frustration, encouragement, urgency, neutrality, etc.
+    - The offers youve recently recieved
 
-    Carefully consider the meaning of the argument in context with the time and history of offers.
+    - The offers youve recently sent
 
-    Your output must be a JSON object containing your next target utility and a short explanation of your decision:
+    - The time remaining in the negotiation
 
-    {{
-        "target_utility": float,
-        "reasoning": str
-    }}
+    Consider the above information and make a new offer.
+    
+    Also as your opponent makes offers, try to understand their preferences and make offers that are favorable to both parties.  So you can offer offers that are the same to you but is more valuable to your opponent. Leading to a more efficient negotiation.
+    
+    As time decreases, or as your opponent concedes yous should also offer offers that are favorable to both parties slightly more.
+    To do this change your offers as time goes on. Select your second or third choices for issues you care less about as time goes on.
+    
+    As time gets close to the deadline, make even larger concessions.
 
-    Recieved Offer History: {recieved_offer_history}
-    Sent Offer History: {sent_offer_history}
-    Remaining Time: {time}
-    Argument: {argument}
+    Your offer should be in the following format, Where each issue should have a valid accompanying value. Where the reasoning is a short explanation of why you made this offer.
+    
+    In your reasoning, explain why you made the offer you did. If you made a concession, explain how:
+
+    - What was the best value for this issue and what did choose as a concession and why ? 
+
+    - Go into detail issue by issue. 
+
+    Slowly concede as time goes on. Dont stay still. 
+
+    Dont EVER remake the same offer.
+
+    {offer_schema}
+        
+    Context: 
+
+    Issue weights:
+    {issue_weights}
+
+    Value weights:
+    {value_weights}
+
+    Reservation value:
+    {reservation_value}
+
+    Recieved offers:
+    {recieved_offer_history}
+
+    Sent offers:
+    {sent_offer_history}
+
+    Time remaining:
+    {time}
+
+    Your opponent is saying:
+    {argument}
 """
 )
 

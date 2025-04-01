@@ -1,0 +1,35 @@
+{
+ "reservationValue": 0,
+ "issueWeights": {
+  "Accommodation": 0.4,
+  "Destination": 0.3,
+  "Season": 0.1,
+  "Transportation": 0.2
+ },
+ "issues": {
+  "Accommodation": {
+   "Caravan": 1.0,
+   "Hostel": 0.75,
+   "Hotel": 0.5,
+   "House": 0.25
+  },
+  "Destination": {
+   "Berlin": 1.0,
+   "London": 0.75,
+   "Paris": 0.5,
+   "Tokyo": 0.25
+  },
+  "Season": {
+   "Autumn": 1.0,
+   "Spring": 0.75,
+   "Summer": 0.5,
+   "Winter": 0.25
+  },
+  "Transportation": {
+   "Bus": 1.0,
+   "Car": 0.75,
+   "Subway": 0.5,
+   "Taxi": 0.25
+  }
+ }
+}

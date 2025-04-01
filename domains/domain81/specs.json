@@ -1,0 +1,26 @@
+{
+ "Name": "DomainHoliday2",
+ "NumberOfBids": 500,
+ "NumberOfIssues": 4,
+ "IssueValues": [
+  5,
+  5,
+  4,
+  5
+ ],
+ "Opposition": 0.3354101966249685,
+ "BalanceScore": -0.002499999999999989,
+ "NormalizedBalanceScore": -0.3475080003802392,
+ "Product Score": 0.6308,
+ "Social Welfare": 1.6099999999999999,
+ "Nash_A": 0.8300000000000001,
+ "Nash_B": 0.76,
+ "Kalai_A": 0.6699999999999999,
+ "Kalai_B": 0.94,
+ "NashBid": "{'Accommodation': 'Caravan', 'Destination': 'Paris', 'Season': 'Summer', 'Transportation': 'Bus'}",
+ "KalaiBid": "{'Accommodation': 'Hotel', 'Destination': 'Paris', 'Season': 'Summer', 'Transportation': 'Bus'}",
+ "ReservationValueProfileA": 0,
+ "ReservationValueProfileB": 0,
+ "MinUtility": 0.20500000000000002,
+ "MaxUtility": 1.0
+}
